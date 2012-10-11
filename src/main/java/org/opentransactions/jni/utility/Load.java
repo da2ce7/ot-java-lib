@@ -67,6 +67,8 @@ public class Load {
             throw new LoadingOpenTransactionsFailure("Native Already Loaded!");
         }
 
+        boolean bFirstAttempt = true;
+        
         for (;;) {
 
             try {
@@ -92,7 +94,14 @@ public class Load {
                 Tools.loadNative(Tools.getOS());
             } catch (UnsatisfiedLinkError ex) {
 
-                l.log(Level.SEVERE, null, ex);
+                if (bFirstAttempt) {
+                    l.log(Level.FINE, null, ex);
+                    bFirstAttempt = false;
+                }
+                else {
+                    l.log(Level.SEVERE, null, ex);
+                }
+                    
                 extra_path = javaPathCallback.GetJavaPathFromUser("Failed To Find OT");
                 continue;
             }
