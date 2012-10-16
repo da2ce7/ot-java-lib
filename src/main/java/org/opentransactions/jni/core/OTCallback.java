@@ -8,15 +8,16 @@
 
 package org.opentransactions.jni.core;
 
-public class Displayable extends Storable {
+public class OTCallback {
   private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-  protected Displayable(long cPtr, boolean cMemoryOwn) {
-    super(otapiJNI.Displayable_SWIGUpcast(cPtr), cMemoryOwn);
+  protected OTCallback(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(Displayable obj) {
+  protected static long getCPtr(OTCallback obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -28,24 +29,22 @@ public class Displayable extends Storable {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        otapiJNI.delete_Displayable(swigCPtr);
+        otapiJNI.delete_OTCallback(swigCPtr);
       }
       swigCPtr = 0;
     }
-    super.delete();
   }
 
-  public void setGui_label(String value) {
-    otapiJNI.Displayable_gui_label_set(swigCPtr, this, value);
+  public OTCallback() {
+    this(otapiJNI.new_OTCallback(), true);
   }
 
-  public String getGui_label() {
-    return otapiJNI.Displayable_gui_label_get(swigCPtr, this);
+  public void runOne(String szDisplay, OTPassword theOutput) {
+    otapiJNI.OTCallback_runOne(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
   }
 
-  public static Displayable ot_dynamic_cast(Storable pObject) {
-    long cPtr = otapiJNI.Displayable_ot_dynamic_cast(Storable.getCPtr(pObject), pObject);
-    return (cPtr == 0) ? null : new Displayable(cPtr, false);
+  public void runTwo(String szDisplay, OTPassword theOutput) {
+    otapiJNI.OTCallback_runTwo(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
   }
 
 }

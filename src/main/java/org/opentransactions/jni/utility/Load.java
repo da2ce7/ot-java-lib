@@ -9,10 +9,11 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentransactions.jni.core.OTAPI_Basic;
+import org.opentransactions.jni.core.OTCallback;
+import org.opentransactions.jni.core.OTCaller;
 import org.opentransactions.jni.core.Storable;
 import org.opentransactions.jni.core.StoredObjectType;
 import org.opentransactions.jni.core.StringMap;
-import org.opentransactions.jni.core.SwigPasswordCallback;
 import org.opentransactions.jni.core.otapi;
 import org.opentransactions.jni.core.otapiJNI;
 
@@ -23,6 +24,8 @@ import org.opentransactions.jni.core.otapiJNI;
 public class Load {
 
     private static Load ptrThis = null;
+    
+    public static OTCaller pCaller = null;
 
     public synchronized static Load It() {
         if (null == ptrThis) {
@@ -202,7 +205,7 @@ public class Load {
         isPasswordImageSet = true;
     }
 
-    public void SetupPasswordCallback(SwigPasswordCallback passwordCallback) throws LoadingOpenTransactionsFailure {
+    public void SetupPasswordCallback(OTCallback passwordCallback) throws LoadingOpenTransactionsFailure {
 
         if (!isPasswordImageSet) {
             throw new LoadingOpenTransactionsFailure("Must Set Password Image First!");
@@ -210,12 +213,18 @@ public class Load {
         if (isPasswordCallbackSet) {
             throw new LoadingOpenTransactionsFailure("Already Have Set Password Callback!");
         }
+        
+        if (null == pCaller) {
+            pCaller = new OTCaller();
+        }
 
         if (null == passwordCallback) {
             throw new IllegalArgumentException("passwordCallback is null");
         }
+        
+        pCaller.setCallback(passwordCallback);
 
-        if (!SwigPasswordCallback.SetCallback(passwordCallback)) {
+        if (!pCaller.isCallbackSet()) {
             throw new LoadingOpenTransactionsFailure("Unable to Set Password Callback");
         }
 

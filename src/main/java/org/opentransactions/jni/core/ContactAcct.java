@@ -104,9 +104,4 @@ public class ContactAcct extends Displayable {
     return (cPtr == 0) ? null : new ContactAcct(cPtr, false);
   }
 
-  public static Storable ot_dynamic_cast_box(ContactAcct pUnboxed) {
-    long cPtr = otapiJNI.ContactAcct_ot_dynamic_cast_box(ContactAcct.getCPtr(pUnboxed), pUnboxed);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
-  }
-
 }

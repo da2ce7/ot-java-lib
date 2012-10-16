@@ -57,9 +57,4 @@ public class AddressBook extends Storable {
     return (cPtr == 0) ? null : new AddressBook(cPtr, false);
   }
 
-  public static Storable ot_dynamic_cast_box(AddressBook pUnboxed) {
-    long cPtr = otapiJNI.AddressBook_ot_dynamic_cast_box(AddressBook.getCPtr(pUnboxed), pUnboxed);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
-  }
-
 }
