@@ -63,7 +63,11 @@ public class otapiJNI {
   public final static native long new_OTCallback();
   public final static native void delete_OTCallback(long jarg1);
   public final static native void OTCallback_runOne(long jarg1, OTCallback jarg1_, String jarg2, long jarg3, OTPassword jarg3_);
+  public final static native void OTCallback_runOneSwigExplicitOTCallback(long jarg1, OTCallback jarg1_, String jarg2, long jarg3, OTPassword jarg3_);
   public final static native void OTCallback_runTwo(long jarg1, OTCallback jarg1_, String jarg2, long jarg3, OTPassword jarg3_);
+  public final static native void OTCallback_runTwoSwigExplicitOTCallback(long jarg1, OTCallback jarg1_, String jarg2, long jarg3, OTPassword jarg3_);
+  public final static native void OTCallback_director_connect(OTCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void OTCallback_change_ownership(OTCallback obj, long cptr, boolean take_or_release);
   public final static native long new_OTCaller();
   public final static native void delete_OTCaller(long jarg1);
   public final static native boolean OTCaller_GetPassword(long jarg1, OTCaller jarg1_, long jarg2, OTPassword jarg2_);
@@ -75,6 +79,7 @@ public class otapiJNI {
   public final static native boolean OTCaller_isCallbackSet(long jarg1, OTCaller jarg1_);
   public final static native void OTCaller_callOne(long jarg1, OTCaller jarg1_);
   public final static native void OTCaller_callTwo(long jarg1, OTCaller jarg1_);
+  public final static native boolean OT_API_Set_PasswordCallback(long jarg1, OTCaller jarg1_);
   public final static native long new_OTAPI_Basic();
   public final static native boolean OTAPI_Basic_SetWallet(String jarg1);
   public final static native boolean OTAPI_Basic_LoadWallet();
@@ -805,4 +810,16 @@ public class otapiJNI {
   public final static native long ContactAcct_SWIGUpcast(long jarg1);
   public final static native long Contact_SWIGUpcast(long jarg1);
   public final static native long AddressBook_SWIGUpcast(long jarg1);
+
+  public static void SwigDirector_OTCallback_runOne(OTCallback self, String szDisplay, long theOutput) {
+    self.runOne(szDisplay, new OTPassword(theOutput, false));
+  }
+  public static void SwigDirector_OTCallback_runTwo(OTCallback self, String szDisplay, long theOutput) {
+    self.runTwo(szDisplay, new OTPassword(theOutput, false));
+  }
+
+  private final static native void swig_module_init();
+  static {
+    swig_module_init();
+  }
 }

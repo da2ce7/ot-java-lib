@@ -35,16 +35,32 @@ public class OTCallback {
     }
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    otapiJNI.OTCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    otapiJNI.OTCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public OTCallback() {
     this(otapiJNI.new_OTCallback(), true);
+    otapiJNI.OTCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
   public void runOne(String szDisplay, OTPassword theOutput) {
-    otapiJNI.OTCallback_runOne(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
+    if (getClass() == OTCallback.class) otapiJNI.OTCallback_runOne(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput); else otapiJNI.OTCallback_runOneSwigExplicitOTCallback(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
   }
 
   public void runTwo(String szDisplay, OTPassword theOutput) {
-    otapiJNI.OTCallback_runTwo(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
+    if (getClass() == OTCallback.class) otapiJNI.OTCallback_runTwo(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput); else otapiJNI.OTCallback_runTwoSwigExplicitOTCallback(swigCPtr, this, szDisplay, OTPassword.getCPtr(theOutput), theOutput);
   }
 
 }

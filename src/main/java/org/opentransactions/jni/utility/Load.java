@@ -223,8 +223,9 @@ public class Load {
         }
         
         pCaller.setCallback(passwordCallback);
+        boolean bSuccess = otapi.OT_API_Set_PasswordCallback(pCaller);
 
-        if (!pCaller.isCallbackSet()) {
+        if (!bSuccess) {
             throw new LoadingOpenTransactionsFailure("Unable to Set Password Callback");
         }
 
