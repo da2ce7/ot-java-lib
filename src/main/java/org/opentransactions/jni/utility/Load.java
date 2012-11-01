@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opentransactions.jni.core.OTAPI_Basic;
 import org.opentransactions.jni.core.OTCallback;
 import org.opentransactions.jni.core.OTCaller;
 import org.opentransactions.jni.core.Storable;
@@ -123,7 +122,7 @@ public class Load {
             throw new LoadingOpenTransactionsFailure("Is Already Initialized");
         }
 
-        long pAPI = otapiJNI.new_OTAPI_Basic();
+        long pAPI = otapiJNI.OT_API_Init();
 
         if (0 != pAPI) {
             l.log(Level.INFO, "Output: {0}", Long.toString(pAPI));
@@ -241,7 +240,7 @@ public class Load {
             throw new LoadingOpenTransactionsFailure("Already Loaded!");
         }
 
-        if (!OTAPI_Basic.LoadWallet()) {
+        if (! (1 == otapiJNI.OT_API_LoadWallet())) {
             throw new LoadingOpenTransactionsFailure("Unable to Load Wallet");
         }
 

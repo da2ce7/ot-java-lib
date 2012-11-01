@@ -143,22 +143,22 @@ public class Storage {
 
   public Storable QueryObject(StoredObjectType theObjectType, String strFolder, String oneStr, String twoStr, String threeStr) {
     long cPtr = otapiJNI.Storage_QueryObject__SWIG_0(swigCPtr, this, theObjectType.swigValue(), strFolder, oneStr, twoStr, threeStr);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public Storable QueryObject(StoredObjectType theObjectType, String strFolder, String oneStr, String twoStr) {
     long cPtr = otapiJNI.Storage_QueryObject__SWIG_1(swigCPtr, this, theObjectType.swigValue(), strFolder, oneStr, twoStr);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public Storable QueryObject(StoredObjectType theObjectType, String strFolder, String oneStr) {
     long cPtr = otapiJNI.Storage_QueryObject__SWIG_2(swigCPtr, this, theObjectType.swigValue(), strFolder, oneStr);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public Storable QueryObject(StoredObjectType theObjectType, String strFolder) {
     long cPtr = otapiJNI.Storage_QueryObject__SWIG_3(swigCPtr, this, theObjectType.swigValue(), strFolder);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public String EncodeObject(Storable theContents) {
@@ -167,7 +167,7 @@ public class Storage {
 
   public Storable DecodeObject(StoredObjectType theObjectType, String strInput) {
     long cPtr = otapiJNI.Storage_DecodeObject(swigCPtr, this, theObjectType.swigValue(), strInput);
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public boolean EraseValueByKey(String strFolder, String oneStr, String twoStr, String threeStr) {
@@ -188,7 +188,7 @@ public class Storage {
 
   public Storable CreateObject(StoredObjectType eType) {
     long cPtr = otapiJNI.Storage_CreateObject(swigCPtr, this, eType.swigValue());
-    return (cPtr == 0) ? null : new Storable(cPtr, false);
+    return (cPtr == 0) ? null : new Storable(cPtr, true);
   }
 
   public static Storage Create(StorageType eStorageType, PackType ePackType) {
