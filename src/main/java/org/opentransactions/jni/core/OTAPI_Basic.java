@@ -43,6 +43,10 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_SetWallet(strWalletFilename);
   }
 
+  public static boolean WalletExists() {
+    return otapiJNI.OTAPI_Basic_WalletExists();
+  }
+
   public static boolean LoadWallet() {
     return otapiJNI.OTAPI_Basic_LoadWallet();
   }
@@ -79,16 +83,16 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_NumList_Count(strNumList);
   }
 
-  public static String Encode(String strPlalongext, boolean bLineBreaks) {
-    return otapiJNI.OTAPI_Basic_Encode(strPlalongext, bLineBreaks);
+  public static String Encode(String strPlaintext, boolean bLineBreaks) {
+    return otapiJNI.OTAPI_Basic_Encode(strPlaintext, bLineBreaks);
   }
 
   public static String Decode(String strEncoded, boolean bLineBreaks) {
     return otapiJNI.OTAPI_Basic_Decode(strEncoded, bLineBreaks);
   }
 
-  public static String Encrypt(String RECIPIENT_NYM_ID, String strPlainText) {
-    return otapiJNI.OTAPI_Basic_Encrypt(RECIPIENT_NYM_ID, strPlainText);
+  public static String Encrypt(String RECIPIENT_NYM_ID, String strPlaintext) {
+    return otapiJNI.OTAPI_Basic_Encrypt(RECIPIENT_NYM_ID, strPlaintext);
   }
 
   public static String Decrypt(String RECIPIENT_NYM_ID, String strCiphertext) {
@@ -99,8 +103,8 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_CreateSymmetricKey();
   }
 
-  public static String SymmetricEncrypt(String SYMMETRIC_KEY, String PLAINTEXT) {
-    return otapiJNI.OTAPI_Basic_SymmetricEncrypt(SYMMETRIC_KEY, PLAINTEXT);
+  public static String SymmetricEncrypt(String SYMMETRIC_KEY, String PLAintEXT) {
+    return otapiJNI.OTAPI_Basic_SymmetricEncrypt(SYMMETRIC_KEY, PLAintEXT);
   }
 
   public static String SymmetricDecrypt(String SYMMETRIC_KEY, String CIPHERTEXT_ENVELOPE) {
@@ -109,6 +113,10 @@ public class OTAPI_Basic {
 
   public static String SignContract(String SIGNER_NYM_ID, String THE_CONTRACT) {
     return otapiJNI.OTAPI_Basic_SignContract(SIGNER_NYM_ID, THE_CONTRACT);
+  }
+
+  public static String FlatSign(String SIGNER_NYM_ID, String THE_INPUT, String CONTRACT_TYPE) {
+    return otapiJNI.OTAPI_Basic_FlatSign(SIGNER_NYM_ID, THE_INPUT, CONTRACT_TYPE);
   }
 
   public static String AddSignature(String SIGNER_NYM_ID, String THE_CONTRACT) {
@@ -159,11 +167,11 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_CreateAssetContract(NYM_ID, strXMLcontents);
   }
 
-  public static boolean AddServerContract(String strContract) {
+  public static int AddServerContract(String strContract) {
     return otapiJNI.OTAPI_Basic_AddServerContract(strContract);
   }
 
-  public static boolean AddAssetContract(String strContract) {
+  public static int AddAssetContract(String strContract) {
     return otapiJNI.OTAPI_Basic_AddAssetContract(strContract);
   }
 
@@ -355,10 +363,6 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Nym_VerifyOutpaymentsByIndex(NYM_ID, nIndex);
   }
 
-  public static boolean Wallet_ChangePassphrase() {
-    return otapiJNI.OTAPI_Basic_Wallet_ChangePassphrase();
-  }
-
   public static boolean Wallet_CanRemoveServer(String SERVER_ID) {
     return otapiJNI.OTAPI_Basic_Wallet_CanRemoveServer(SERVER_ID);
   }
@@ -385,6 +389,10 @@ public class OTAPI_Basic {
 
   public static boolean Wallet_CanRemoveAccount(String ACCOUNT_ID) {
     return otapiJNI.OTAPI_Basic_Wallet_CanRemoveAccount(ACCOUNT_ID);
+  }
+
+  public static boolean Wallet_ChangePassphrase() {
+    return otapiJNI.OTAPI_Basic_Wallet_ChangePassphrase();
   }
 
   public static String Wallet_ExportNym(String NYM_ID) {
@@ -443,7 +451,7 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_DiscardCheque(SERVER_ID, USER_ID, ACCT_ID, THE_CHEQUE);
   }
 
-  public static String ProposePaymentPlan(String SERVER_ID, String VALID_FROM, String VALID_TO, String SENDER_ACCT_ID, String SENDER_USER_ID, String PLAN_CONSIDERATION, String RECIPIENT_ACCT_ID, String RECIPIENT_USER_ID, String INITIAL_PAYMENT_AMOUNT, String INITIAL_PAYMENT_DELAY, String PAYMENT_PLAN_AMOUNT, String PAYMENT_PLAN_DELAY, String PAYMENT_PLAN_PERIOD, String PAYMENT_PLAN_LENGTH, int PAYMENT_PLAN_MAX_PAYMENTS) {
+  public static String ProposePaymentPlan(String SERVER_ID, String VALID_FROM, String VALID_TO, String SENDER_ACCT_ID, String SENDER_USER_ID, String PLAN_CONSIDERATION, String RECIPIENT_ACCT_ID, String RECIPIENT_USER_ID, String INITIAL_PAYMENT_AMOUNT, String INITIAL_PAYMENT_DELAY, String PAYMENT_PLAN_AMOUNT, String PAYMENT_PLAN_DELAY, String PAYMENT_PLAN_PERIOD, String PAYMENT_PLAN_LENGTH, String PAYMENT_PLAN_MAX_PAYMENTS) {
     return otapiJNI.OTAPI_Basic_ProposePaymentPlan(SERVER_ID, VALID_FROM, VALID_TO, SENDER_ACCT_ID, SENDER_USER_ID, PLAN_CONSIDERATION, RECIPIENT_ACCT_ID, RECIPIENT_USER_ID, INITIAL_PAYMENT_AMOUNT, INITIAL_PAYMENT_DELAY, PAYMENT_PLAN_AMOUNT, PAYMENT_PLAN_DELAY, PAYMENT_PLAN_PERIOD, PAYMENT_PLAN_LENGTH, PAYMENT_PLAN_MAX_PAYMENTS);
   }
 
@@ -611,8 +619,8 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Ledger_GetTransactionByID(SERVER_ID, USER_ID, ACCOUNT_ID, THE_LEDGER, TRANSACTION_NUMBER);
   }
 
-  public static String Ledger_GetTransactionNumberByIndex(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_LEDGER, int nIndex) {
-    return otapiJNI.OTAPI_Basic_Ledger_GetTransactionNumberByIndex(SERVER_ID, USER_ID, ACCOUNT_ID, THE_LEDGER, nIndex);
+  public static String Ledger_GetTransactionIDByIndex(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_LEDGER, int nIndex) {
+    return otapiJNI.OTAPI_Basic_Ledger_GetTransactionIDByIndex(SERVER_ID, USER_ID, ACCOUNT_ID, THE_LEDGER, nIndex);
   }
 
   public static String Ledger_AddTransaction(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_LEDGER, String THE_TRANSACTION) {
@@ -643,11 +651,11 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Transaction_GetVoucher(SERVER_ID, USER_ID, ACCOUNT_ID, THE_TRANSACTION);
   }
 
-  public static int Transaction_GetSuccess(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_TRANSACTION) {
+  public static boolean Transaction_GetSuccess(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_TRANSACTION) {
     return otapiJNI.OTAPI_Basic_Transaction_GetSuccess(SERVER_ID, USER_ID, ACCOUNT_ID, THE_TRANSACTION);
   }
 
-  public static int Transaction_GetBalanceAgreementSuccess(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_TRANSACTION) {
+  public static boolean Transaction_GetBalanceAgreementSuccess(String SERVER_ID, String USER_ID, String ACCOUNT_ID, String THE_TRANSACTION) {
     return otapiJNI.OTAPI_Basic_Transaction_GetBalanceAgreementSuccess(SERVER_ID, USER_ID, ACCOUNT_ID, THE_TRANSACTION);
   }
 
@@ -683,12 +691,16 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Transaction_GetDisplayReferenceToNum(SERVER_ID, USER_ID, ACCOUNT_ID, THE_TRANSACTION);
   }
 
-  public static String CreatePurse(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID) {
-    return otapiJNI.OTAPI_Basic_CreatePurse(SERVER_ID, ASSET_TYPE_ID, USER_ID);
-  }
-
   public static boolean SavePurse(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID, String THE_PURSE) {
     return otapiJNI.OTAPI_Basic_SavePurse(SERVER_ID, ASSET_TYPE_ID, USER_ID, THE_PURSE);
+  }
+
+  public static String CreatePurse(String SERVER_ID, String ASSET_TYPE_ID, String OWNER_ID, String SIGNER_ID) {
+    return otapiJNI.OTAPI_Basic_CreatePurse(SERVER_ID, ASSET_TYPE_ID, OWNER_ID, SIGNER_ID);
+  }
+
+  public static String CreatePurse_Passphrase(String SERVER_ID, String ASSET_TYPE_ID, String SIGNER_ID) {
+    return otapiJNI.OTAPI_Basic_CreatePurse_Passphrase(SERVER_ID, ASSET_TYPE_ID, SIGNER_ID);
   }
 
   public static String Purse_GetTotalValue(String SERVER_ID, String ASSET_TYPE_ID, String THE_PURSE) {
@@ -699,16 +711,24 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Purse_Count(SERVER_ID, ASSET_TYPE_ID, THE_PURSE);
   }
 
-  public static String Purse_Peek(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID, String THE_PURSE) {
-    return otapiJNI.OTAPI_Basic_Purse_Peek(SERVER_ID, ASSET_TYPE_ID, USER_ID, THE_PURSE);
+  public static boolean Purse_HasPassword(String SERVER_ID, String THE_PURSE) {
+    return otapiJNI.OTAPI_Basic_Purse_HasPassword(SERVER_ID, THE_PURSE);
   }
 
-  public static String Purse_Pop(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID, String THE_PURSE) {
-    return otapiJNI.OTAPI_Basic_Purse_Pop(SERVER_ID, ASSET_TYPE_ID, USER_ID, THE_PURSE);
+  public static String Purse_Peek(String SERVER_ID, String ASSET_TYPE_ID, String OWNER_ID, String THE_PURSE) {
+    return otapiJNI.OTAPI_Basic_Purse_Peek(SERVER_ID, ASSET_TYPE_ID, OWNER_ID, THE_PURSE);
   }
 
-  public static String Purse_Push(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID, String THE_PURSE, String THE_TOKEN) {
-    return otapiJNI.OTAPI_Basic_Purse_Push(SERVER_ID, ASSET_TYPE_ID, USER_ID, THE_PURSE, THE_TOKEN);
+  public static String Purse_Pop(String SERVER_ID, String ASSET_TYPE_ID, String OWNER_OR_SIGNER_ID, String THE_PURSE) {
+    return otapiJNI.OTAPI_Basic_Purse_Pop(SERVER_ID, ASSET_TYPE_ID, OWNER_OR_SIGNER_ID, THE_PURSE);
+  }
+
+  public static String Purse_Push(String SERVER_ID, String ASSET_TYPE_ID, String SIGNER_ID, String OWNER_ID, String THE_PURSE, String THE_TOKEN) {
+    return otapiJNI.OTAPI_Basic_Purse_Push(SERVER_ID, ASSET_TYPE_ID, SIGNER_ID, OWNER_ID, THE_PURSE, THE_TOKEN);
+  }
+
+  public static String Purse_Empty(String SERVER_ID, String ASSET_TYPE_ID, String SIGNER_ID, String THE_PURSE) {
+    return otapiJNI.OTAPI_Basic_Purse_Empty(SERVER_ID, ASSET_TYPE_ID, SIGNER_ID, THE_PURSE);
   }
 
   public static boolean Wallet_ImportPurse(String SERVER_ID, String ASSET_TYPE_ID, String USER_ID, String THE_PURSE) {
@@ -719,8 +739,8 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_exchangePurse(SERVER_ID, ASSET_TYPE_ID, USER_ID, THE_PURSE);
   }
 
-  public static String Token_ChangeOwner(String SERVER_ID, String ASSET_TYPE_ID, String THE_TOKEN, String OLD_OWNER_NYM_ID, String NEW_OWNER_NYM_ID) {
-    return otapiJNI.OTAPI_Basic_Token_ChangeOwner(SERVER_ID, ASSET_TYPE_ID, THE_TOKEN, OLD_OWNER_NYM_ID, NEW_OWNER_NYM_ID);
+  public static String Token_ChangeOwner(String SERVER_ID, String ASSET_TYPE_ID, String THE_TOKEN, String SIGNER_NYM_ID, String OLD_OWNER, String NEW_OWNER) {
+    return otapiJNI.OTAPI_Basic_Token_ChangeOwner(SERVER_ID, ASSET_TYPE_ID, THE_TOKEN, SIGNER_NYM_ID, OLD_OWNER, NEW_OWNER);
   }
 
   public static String Token_GetID(String SERVER_ID, String ASSET_TYPE_ID, String THE_TOKEN) {
@@ -751,48 +771,52 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Token_GetServerID(THE_TOKEN);
   }
 
-  public static String Instrument_GetAmount(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetAmount(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetAmount(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetAmount(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetTransNum(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetTransNum(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetTransNum(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetTransNum(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetValidFrom(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetValidFrom(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetValidFrom(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetValidFrom(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetValidTo(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetValidTo(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetValidTo(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetValidTo(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetMemo(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetMemo(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetMemo(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetMemo(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetType(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetType(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetType(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetType(THE_INSTRUMENT);
   }
 
-  public static String Instrument_GetAssetID(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrument_GetAssetID(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetServerID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetServerID(THE_INSTRUMENT);
   }
 
-  public static String Instrmnt_GetSenderUserID(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrmnt_GetSenderUserID(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetAssetID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetAssetID(THE_INSTRUMENT);
   }
 
-  public static String Instrmnt_GetSenderAcctID(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrmnt_GetSenderAcctID(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetSenderUserID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetSenderUserID(THE_INSTRUMENT);
   }
 
-  public static String Instrmnt_GetRecipientUserID(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrmnt_GetRecipientUserID(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetSenderAcctID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetSenderAcctID(THE_INSTRUMENT);
   }
 
-  public static String Instrmnt_GetRecipientAcctID(String SERVER_ID, String THE_INSTRUMENT) {
-    return otapiJNI.OTAPI_Basic_Instrmnt_GetRecipientAcctID(SERVER_ID, THE_INSTRUMENT);
+  public static String Instrmnt_GetRecipientUserID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetRecipientUserID(THE_INSTRUMENT);
+  }
+
+  public static String Instrmnt_GetRecipientAcctID(String THE_INSTRUMENT) {
+    return otapiJNI.OTAPI_Basic_Instrmnt_GetRecipientAcctID(THE_INSTRUMENT);
   }
 
   public static int checkServerID(String SERVER_ID, String USER_ID) {
@@ -1027,7 +1051,7 @@ public class OTAPI_Basic {
     return otapiJNI.OTAPI_Basic_Message_GetPayload(THE_MESSAGE);
   }
 
-  public static String Message_GetDepth(String THE_MESSAGE) {
+  public static int Message_GetDepth(String THE_MESSAGE) {
     return otapiJNI.OTAPI_Basic_Message_GetDepth(THE_MESSAGE);
   }
 
