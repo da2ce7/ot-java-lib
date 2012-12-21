@@ -2,17 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.opentransactions.jni.utility;
+package org.opentransactions.otjavalib;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opentransactions.jni.core.OTAPI_Basic;
+import org.opentransactions.jni.core.OTCallback;
+import org.opentransactions.jni.core.OTCaller;
 import org.opentransactions.jni.core.Storable;
 import org.opentransactions.jni.core.StoredObjectType;
 import org.opentransactions.jni.core.StringMap;
-import org.opentransactions.jni.core.SwigPasswordCallback;
 import org.opentransactions.jni.core.otapi;
 import org.opentransactions.jni.core.otapiJNI;
 
@@ -37,13 +38,13 @@ public class Load {
     private boolean isWalletLoaded = false;
 
     public interface IJavaPath {
-        String GetJavaPathFromUser(String message);
+        Boolean GetIfUserCancelled();
+        String  GetJavaPathFromUser(String message);
     }
     
     public interface IPasswordImage {
-
+        Boolean GetIfUserCancelled();
         String GetPasswordImageFromUser(String message);
-
         boolean SetPasswordImage(String path);
     }
     
@@ -54,11 +55,15 @@ public class Load {
     private Load() {
     }
 
-    boolean GetIsLoaded() {
+    public boolean GetIsLoaded() {
         return isWalletLoaded;
     }
+    
+    public boolean GetInitialized() {
+        return isInitialized;
+    }
 
-    public void InitNative(IJavaPath javaPathCallback, String optionalPath) throws LoadingOpenTransactionsFailure {
+    public boolean InitNative(IJavaPath javaPathCallback, String optionalPath) throws LoadingOpenTransactionsFailure {
         final Logger l = Logger.getLogger(Load.class.getName());
 
         String extra_path = optionalPath.isEmpty() ? "" : optionalPath;
@@ -68,6 +73,8 @@ public class Load {
         }
 
         boolean bFirstAttempt = true;
+        boolean bLoadSuccess = false;
+
         
         for (;;) {
 
@@ -80,13 +87,13 @@ public class Load {
                     pathsSet = Tools.appendPathToRuntime(extra_path);
                 }
 
-                l.log(Level.INFO, null, pathsSet);
+                l.log(Level.FINE, pathsSet.toString());
 
             } catch (IllegalAccessException ex) {
-                l.log(Level.SEVERE, null, ex);
+                l.log(Level.SEVERE, "Unable To Access Java Paths", ex);
                 System.exit(-1); // bad excetion
             } catch (NoSuchFieldException ex) {
-                l.log(Level.SEVERE, null, ex);
+                l.log(Level.SEVERE, "Unable to Set Feild", ex);
                 System.exit(-1); // bad excetion
             }
 
@@ -95,22 +102,36 @@ public class Load {
             } catch (UnsatisfiedLinkError ex) {
 
                 if (bFirstAttempt) {
-                    l.log(Level.FINE, null, ex);
+                    l.log(Level.FINE, "This error can be safely ignored", ex);
                     bFirstAttempt = false;
                 }
                 else {
-                    l.log(Level.SEVERE, null, ex);
+                    l.log(Level.SEVERE, "Failed to Load Second Attempt! (Bad)", ex);
                 }
                     
-                extra_path = javaPathCallback.GetJavaPathFromUser("Failed To Find OT");
+                extra_path = javaPathCallback.GetJavaPathFromUser(Tools.getJavaPathUserMessage(Tools.getOS()));
+                
+                if (javaPathCallback.GetIfUserCancelled()) {
+                    break;
+                }
+                
                 continue;
             }
+            bLoadSuccess = true;
             break; //success
         }
+        if (bLoadSuccess)
+        {
         isNativeLoaded = true;
+        return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public void Init() throws LoadingOpenTransactionsFailure {
+    public boolean Init() throws LoadingOpenTransactionsFailure {
         final Logger l = Logger.getLogger(Load.class.getName());
 
         if (!isNativeLoaded) {
@@ -120,20 +141,35 @@ public class Load {
             throw new LoadingOpenTransactionsFailure("Is Already Initialized");
         }
 
-        long pAPI = otapiJNI.new_OTAPI_Basic();
+        // --------------------------------------------
+        // This has internal logic so that it only actually is called once.
+        // Probably not necessary anymore since I moved the call here.
+        // The problem was, this call was happening too early (it could
+        // happen even if otapi init failed) and then it wouldn't allow
+        // itself to trigger again.  This I think should fix that.
+        //
+        // --------------------------------------------
 
-        if (0 != pAPI) {
-            l.log(Level.INFO, "Output: {0}", Long.toString(pAPI));
-            l.log(Level.INFO, "Load.initOTAPI: SUCCESS invoking OT_API_Init()");
+        boolean bSuccess = false;
 
-        } else // Failed in OT_API_Init().
+        if (otapiJNI.OTAPI_Basic_AppStartup()) // Call once at startup. Sets up OpenSSL, signal handlers, etc.
         {
-            throw new LoadingOpenTransactionsFailure("calling new_OTAPI_Basic() failed");
+            bSuccess = otapiJNI.OTAPI_Basic_Init(); // Initialize OTAPI context. Loads config file, etc.
         }
+        // -------------------------------------------------
+        if (bSuccess) {
+            System.out.println("Load.initOTAPI: SUCCESS invoking OTAPI_Basic_AppStartup and OTAPI_Basic_Init.");
+        } else // Failed in OTAPI_Basic_AppStartup or OTAPI_Basic_Init.
+        {
+            String strErrorMsg = "Load.initOTAPI: Failed calling OTAPI_Basic_AppStartup or OTAPI_Basic_Init.";
+            throw new LoadingOpenTransactionsFailure(strErrorMsg);
+        }
+
         isInitialized = true;
+        return true;
     }
 
-    public void SetupPasswordImage(IPasswordImage passwordImage) throws LoadingOpenTransactionsFailure {
+    public boolean SetupPasswordImage(IPasswordImage passwordImage) throws LoadingOpenTransactionsFailure {
 
         if (!isInitialized) {
             throw new LoadingOpenTransactionsFailure("Is Not Initialized");
@@ -171,12 +207,23 @@ public class Load {
 
             for (;;) {
                 imagePath = passwordImage.GetPasswordImageFromUser("passwordImage");
+                
+                if (passwordImage.GetIfUserCancelled()) {
+                    bHaveImage = false;
+                    break;
+                }
 
                 File f = new File(imagePath);
                 if (f.exists()) {
+                    bHaveImage = true;
                     // Good we have a password Image
                     break;
                 }
+            }
+            
+            if (!bHaveImage)
+            {
+                return false;
             }
 
             StringMap stringMap = null;  // we are about to create this object
@@ -200,9 +247,10 @@ public class Load {
             throw new LoadingOpenTransactionsFailure("Password image not Set!");
         }
         isPasswordImageSet = true;
+        return true;
     }
 
-    public void SetupPasswordCallback(SwigPasswordCallback passwordCallback) throws LoadingOpenTransactionsFailure {
+    public boolean SetupPasswordCallback(OTCaller passwordCaller, OTCallback passwordCallback) throws LoadingOpenTransactionsFailure {
 
         if (!isPasswordImageSet) {
             throw new LoadingOpenTransactionsFailure("Must Set Password Image First!");
@@ -215,14 +263,26 @@ public class Load {
             throw new IllegalArgumentException("passwordCallback is null");
         }
 
-        if (!SwigPasswordCallback.SetCallback(passwordCallback)) {
+        try {
+            passwordCaller.setCallback(passwordCallback);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             throw new LoadingOpenTransactionsFailure("Unable to Set Password Callback");
         }
-
+        
+        Boolean bSuccess = otapi.OT_API_Set_PasswordCallback(passwordCaller);
+        if (!bSuccess)
+        {
+            passwordCaller = null;
+            passwordCallback = null;
+            throw new LoadingOpenTransactionsFailure("Unable to Set Password Callback");
+        }
+        
         isPasswordCallbackSet = true;
+        return true;
     }
 
-    public void LoadWallet() throws LoadingOpenTransactionsFailure {
+    public boolean LoadWallet() throws LoadingOpenTransactionsFailure {
 
         if (!isPasswordCallbackSet) {
             throw new LoadingOpenTransactionsFailure("Must Set Password Callback First!");
@@ -236,6 +296,7 @@ public class Load {
         }
 
         isWalletLoaded = true;
+        return true;
     }
 
     static public class LoadingOpenTransactionsFailure extends Exception {

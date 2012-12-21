@@ -1,4 +1,4 @@
-package com.wrapper.core.jni;
+package org.opentransactions.otjavalib;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
