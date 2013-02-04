@@ -4,7 +4,7 @@
  */
 package org.opentransactions.otjavalib;
 
-import org.opentransactions.otjavalib.util.WinRegistry;
+import org.opentransactions.otjavalib.util.WinRegistryReadOnly;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -71,7 +71,7 @@ public class Tools {
 
             
                 try {
-                    String value = WinRegistry.readString(WinRegistry.HKEY_LOCAL_MACHINE, "SOFTWARE\\Open-Transactions", "Path");
+                    String value = WinRegistryReadOnly.readString(WinRegistryReadOnly.HKEY_LOCAL_MACHINE, "SOFTWARE\\Open-Transactions", "Path");
                     if (null == value) {
                         return "";
                     }
